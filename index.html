@@ -260,6 +260,108 @@
 </head>
 <body>
 
+<!-- ===== PASSWORD GATE ===== -->
+<style>
+  #pw-gate {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #0d0f14;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pw-box {
+    background: #151820;
+    border: 1px solid #2a2f3f;
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 360px;
+    text-align: center;
+  }
+  .pw-logo {
+    font-size: 22px; font-weight: 700;
+    color: #e8eaf0; margin-bottom: 6px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .pw-logo span { color: #e8a045; }
+  .pw-sub {
+    font-size: 12px; color: #7a8099;
+    margin-bottom: 32px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .pw-label {
+    font-size: 11px; color: #7a8099; text-align: left;
+    margin-bottom: 8px; letter-spacing: 0.08em;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .pw-input {
+    width: 100%; padding: 12px 16px;
+    background: #0d0f14; border: 1px solid #2a2f3f;
+    border-radius: 8px; color: #e8eaf0;
+    font-size: 15px; letter-spacing: 0.15em;
+    outline: none; transition: border 0.2s;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 20px;
+  }
+  .pw-input:focus { border-color: #e8a045; }
+  .pw-input.error { border-color: #e85b5b; animation: shake 0.3s; }
+  .pw-btn {
+    width: 100%; padding: 13px;
+    background: #e8a045; border: none;
+    border-radius: 8px; color: #0d0f14;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .pw-btn:hover { opacity: 0.85; }
+  .pw-error {
+    font-size: 12px; color: #e85b5b;
+    margin-top: 12px; min-height: 18px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    75%{transform:translateX(6px)}
+  }
+</style>
+
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-logo">こぼれや <span>POS Analytics</span></div>
+    <div class="pw-sub">月島もんじゃ グループ — 社内限定</div>
+    <div class="pw-label">PASSWORD</div>
+    <input id="pw-input" class="pw-input" type="password" placeholder="パスワードを入力" autocomplete="off">
+    <button class="pw-btn" onclick="checkPassword()">ログイン</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<script>
+  // ★ パスワードをここで変更してください ★
+  const DASHBOARD_PASSWORD = 'delta2015';
+
+  function checkPassword() {
+    const input = document.getElementById('pw-input').value;
+    if (input === DASHBOARD_PASSWORD) {
+      document.getElementById('pw-gate').style.display = 'none';
+      sessionStorage.setItem('pw_ok', '1');
+    } else {
+      const el = document.getElementById('pw-input');
+      el.classList.add('error');
+      document.getElementById('pw-error').textContent = 'パスワードが違います';
+      setTimeout(() => el.classList.remove('error'), 400);
+      el.value = '';
+      el.focus();
+    }
+  }
+  document.getElementById('pw-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
+  });
+  // セッション中は再入力不要
+  if (sessionStorage.getItem('pw_ok') === '1') {
+    document.getElementById('pw-gate').style.display = 'none';
+  }
+</script>
+<!-- ===== /PASSWORD GATE ===== -->
+
 <div class="header">
   <div>
     <div class="header-title">こぼれや <span>POS Analytics</span></div>
